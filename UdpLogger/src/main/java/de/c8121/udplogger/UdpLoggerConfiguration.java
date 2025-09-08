@@ -13,6 +13,12 @@ public class UdpLoggerConfiguration {
         currentLogLevel = level;
     }
 
+    static int currentUdpLogLevel = LocationAwareLogger.WARN_INT;
+
+    public static void setUdpLogLevel(int level) {
+        currentUdpLogLevel = level;
+    }
+
     public static UdpSender udpSender;
 
     public static void setSender(UdpSender sender) {

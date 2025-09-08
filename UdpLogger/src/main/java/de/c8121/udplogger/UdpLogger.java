@@ -21,21 +21,26 @@ public class UdpLogger implements Logger {
 
     /**
      * Send log via UPD.
-     * Additionally call {@link #consoleWrite(int, String, Object...)}
+     * Additionally call {@link #consoleWrite(int, String)}
      */
     protected void write(int level, String message, Object... args) {
-        if (!isLevelEnabled(level))
+
+        boolean consoleEnabled = isLevelEnabled(level);
+        boolean udpEnabled = isUdpLevelEnabled(level);
+        if (!consoleEnabled && !udpEnabled)
             return;
 
         var text = "[" + levelName(level) + "] " +
                 name + ": " +
                 MessageFormatter.arrayFormat(message, args).getMessage();
 
-        if (UdpLoggerConfiguration.udpSender != null) {
+        if (udpEnabled && UdpLoggerConfiguration.udpSender != null) {
             UdpLoggerConfiguration.udpSender.send(text);
         }
 
-        consoleWrite(level, text);
+        if (consoleEnabled) {
+            consoleWrite(level, text);
+        }
     }
 
     /**
@@ -65,13 +70,17 @@ public class UdpLogger implements Logger {
     }
 
 
-    private boolean isLevelEnabled(int level) {
+    public boolean isLevelEnabled(int level) {
         return level >= UdpLoggerConfiguration.currentLogLevel;
+    }
+
+    public boolean isUdpLevelEnabled(int level) {
+        return level >= UdpLoggerConfiguration.currentUdpLogLevel;
     }
 
     @Override
     public boolean isTraceEnabled() {
-        return isLevelEnabled(EventConstants.TRACE_INT);
+        return isLevelEnabled(EventConstants.TRACE_INT) || isUdpLevelEnabled(EventConstants.TRACE_INT);
     }
 
     @Override
@@ -134,7 +143,7 @@ public class UdpLogger implements Logger {
 
     @Override
     public boolean isDebugEnabled() {
-        return isLevelEnabled(EventConstants.DEBUG_INT);
+        return isLevelEnabled(EventConstants.DEBUG_INT) || isUdpLevelEnabled(EventConstants.DEBUG_INT);
     }
 
     @Override
@@ -194,7 +203,7 @@ public class UdpLogger implements Logger {
 
     @Override
     public boolean isInfoEnabled() {
-        return isLevelEnabled(EventConstants.INFO_INT);
+        return isLevelEnabled(EventConstants.INFO_INT) || isUdpLevelEnabled(EventConstants.INFO_INT);
     }
 
     @Override
@@ -254,7 +263,7 @@ public class UdpLogger implements Logger {
 
     @Override
     public boolean isWarnEnabled() {
-        return isLevelEnabled(EventConstants.WARN_INT);
+        return isLevelEnabled(EventConstants.WARN_INT) || isUdpLevelEnabled(EventConstants.WARN_INT);
     }
 
     @Override
@@ -314,7 +323,7 @@ public class UdpLogger implements Logger {
 
     @Override
     public boolean isErrorEnabled() {
-        return isLevelEnabled(EventConstants.ERROR_INT);
+        return isLevelEnabled(EventConstants.ERROR_INT) || isUdpLevelEnabled(EventConstants.ERROR_INT);
     }
 
     @Override
