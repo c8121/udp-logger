@@ -7,9 +7,14 @@ import java.net.SocketException;
 
 public class UdpSender {
 
+    public final static int DEFAULT_MAX_MESSAGE_LENGTH = 512;
+
     private final InetAddress server;
     private final int port;
     private final DatagramSocket socket;
+
+    private int maxMessageLength = DEFAULT_MAX_MESSAGE_LENGTH;
+    private boolean replaceNewline = true;
 
     public UdpSender(InetAddress server, int port) throws SocketException {
         this.server = server;
@@ -17,10 +22,28 @@ public class UdpSender {
         this.socket = new DatagramSocket();
     }
 
+    public UdpSender setMaxMessageLength(int maxMessageLength) {
+        this.maxMessageLength = maxMessageLength;
+        return this;
+    }
+
+    public UdpSender replaceNewline(boolean replaceNewline) {
+        this.replaceNewline = replaceNewline;
+        return this;
+    }
+
     public void send(final String text) {
 
         byte[] out = text.getBytes();
-        DatagramPacket packet = new DatagramPacket(out, out.length, this.server, this.port);
+
+        if (replaceNewline) {
+            for (int i = 0; i < out.length; i++) {
+                if (out[i] == '\n' || out[i] == '\r')
+                    out[i] = '-';
+            }
+        }
+
+        DatagramPacket packet = new DatagramPacket(out, Math.min(out.length, maxMessageLength), this.server, this.port);
 
         try {
             this.socket.send(packet);
