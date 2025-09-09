@@ -5,6 +5,9 @@ import org.slf4j.Marker;
 import org.slf4j.event.EventConstants;
 import org.slf4j.helpers.MessageFormatter;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 public class UdpLogger implements Logger {
 
     private final String name;
@@ -33,6 +36,22 @@ public class UdpLogger implements Logger {
         var text = "[" + levelName(level) + "] " +
                 name + ": " +
                 MessageFormatter.arrayFormat(message, args).getMessage();
+
+        //Check if there is a throwable an capture it's stack trace.
+        StringBuilder details = null;
+        for (var arg : args) {
+            if (arg instanceof Throwable throwable) {
+                if (details == null)
+                    details = new StringBuilder();
+                var sw = new StringWriter();
+                var pw = new PrintWriter(sw);
+                throwable.printStackTrace(pw);
+                details.append(sw).append('\n');
+                pw.close();
+            }
+        }
+        if (details != null)
+            text += '\n' + details.toString();
 
         if (udpEnabled && UdpLoggerConfiguration.udpSender != null) {
             UdpLoggerConfiguration.udpSender.send(text);
