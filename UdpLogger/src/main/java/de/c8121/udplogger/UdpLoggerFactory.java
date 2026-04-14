@@ -10,6 +10,16 @@ public class UdpLoggerFactory implements ILoggerFactory {
 
     private final ConcurrentMap<String, Logger> logger = new ConcurrentHashMap<>();
 
+    /**
+     *
+     */
+    public UdpLoggerFactory() {
+        UdpLoggerConfiguration.init();
+    }
+
+    /**
+     *
+     */
     @Override
     public Logger getLogger(String name) {
         return logger.computeIfAbsent(name, this::createLogger);
