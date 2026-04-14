@@ -9,22 +9,34 @@ public class UdpLoggerConfiguration {
 
     static int currentLogLevel = LocationAwareLogger.INFO_INT;
 
+    /**
+     * Set log level for console logging
+     */
     public static void setLogLevel(int level) {
         currentLogLevel = level;
     }
 
     static int currentUdpLogLevel = LocationAwareLogger.WARN_INT;
 
+    /**
+     * Set log level for UDP logging
+     */
     public static void setUdpLogLevel(int level) {
         currentUdpLogLevel = level;
     }
 
     public static UdpSender udpSender;
 
+    /**
+     * Set {@link UdpSender} to be used (only one at a time is possible)
+     */
     public static void setSender(UdpSender sender) {
         udpSender = Objects.requireNonNull(sender);
     }
 
+    /**
+     * Create & set a new {@link UdpSender}
+     */
     public static void createSender(String server, int port) {
         Objects.requireNonNull(server, "server must not be null");
         try {

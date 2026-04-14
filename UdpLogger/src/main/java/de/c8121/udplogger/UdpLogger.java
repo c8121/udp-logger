@@ -13,10 +13,16 @@ public class UdpLogger implements Logger {
     private final String name;
 
 
+    /**
+     *
+     */
     public UdpLogger(String name) {
         this.name = name;
     }
 
+    /**
+     *
+     */
     @Override
     public String getName() {
         return name;
@@ -37,7 +43,7 @@ public class UdpLogger implements Logger {
                 name + ": " +
                 MessageFormatter.arrayFormat(message, args).getMessage();
 
-        //Check if there is a throwable an capture it's stack trace.
+        //Check if there is a throwable and capture it's stack trace.
         StringBuilder details = null;
         for (var arg : args) {
             if (arg instanceof Throwable throwable) {

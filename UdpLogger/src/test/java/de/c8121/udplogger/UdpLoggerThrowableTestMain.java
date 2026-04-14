@@ -10,7 +10,7 @@ import java.net.UnknownHostException;
 
 class UdpLoggerThrowableTestMain {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(UdpLoggerTestMain.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(UdpLoggerThrowableTestMain.class);
 
     public static void main(String[] args) throws UnknownHostException, SocketException {
 

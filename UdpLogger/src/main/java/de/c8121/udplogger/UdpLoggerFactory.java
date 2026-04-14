@@ -15,6 +15,9 @@ public class UdpLoggerFactory implements ILoggerFactory {
         return logger.computeIfAbsent(name, this::createLogger);
     }
 
+    /**
+     * Create new instance of {@link UdpLogger}
+     */
     protected Logger createLogger(String name) {
         return new UdpLogger(name);
     }
